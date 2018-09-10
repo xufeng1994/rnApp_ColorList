@@ -7,7 +7,9 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet,ListView} from 'react-native';
+import ColorButton from './components/ColorButton'
+import ColorForm from './components/ColorForm'
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -16,15 +18,54 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
-type Props = {};
-export default class App extends Component<Props> {
+
+export default class App extends Component{
+
+  constructor(){
+    super();
+    this.ds = new ListView.DataSource({
+      rowHasChanged:(r1,r2) => r1 !== r2
+    })
+    const availableColors = ['red']
+    this.state ={
+      backgroundColor:'blue',
+      availableColors,
+      dataSource:this.ds.cloneWithRows(availableColors)
+    }
+    this.changeColor = this.changeColor.bind(this)
+    this.newColor = this.newColor.bind(this)
+  }
+  changeColor(backgroundColor){
+    this.setState({backgroundColor})
+  }
+
+  newColor(color){
+    const availableColors =[
+      ...this.state.availableColors,
+      color
+    ]
+    this.setState({
+      availableColors,
+      dataSource:this.ds.cloneWithRows(availableColors)
+    })
+  }
+
   render() {
+    const {backgroundColor,dataSource} = this.state
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
+      
+      <ListView style={[styles.container,{backgroundColor}]}
+        dataSource ={dataSource}
+        renderRow={(color)=>(
+          <ColorButton backgroundColor ={color}
+            onSelect = {this.changeColor}/>
+        )}
+        renderHeader = {()=>(
+          <ColorForm  onNewColor ={this.newColor}/>
+        )}>
+        
+      </ListView>
+      
     );
   }
 }
@@ -32,18 +73,11 @@ export default class App extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  header:{
+    backgroundColor:'lightgrey',
+    paddingTop:20,
+    fontSize:30,
+    textAlign:'center'
+  }
 });
