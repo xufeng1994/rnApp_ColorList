@@ -1,8 +1,8 @@
 import React,{ Component}from 'react'
-import {
-    StyleSheet,
+import {    
     View,
     Text,
+    StyleSheet,
     TextInput
 } from 'react-native'
 
@@ -15,15 +15,15 @@ export default class ColorForm extends Component{
         this.submit = this.submit.bind(this)
     }
     submit(){
-       // this.props.onNewColor(this.state.txtColor.toLowerCase())
+        this.props.onNewColor(this.state.txtColor.toLowerCase())
         this.setState({txtColor: ''})
     }
-    render(){
-        return(
+    render() {
+        return (
             <View style ={styles.container}>
                 <TextInput style = {styles.txtInput}
                     placeholder ='enter a color...'
-                    onChange ={(txtColor)=>this.setState({txtColor})}
+                    onChangeText={(txtColor) => this.setState({txtColor})}
                     value = {this.state.txtColor}
                     />
                     <Text style = {styles.button}
@@ -33,8 +33,8 @@ export default class ColorForm extends Component{
     }
 }
 
-ColorForm.propType ={
-   // onNewColor: React.PropTypes.func.isrequired
+ColorForm.propTypes = {
+   // onNewColor: React.PropTypes.func.isRequired
 }
 
 const styles = StyleSheet.create({
